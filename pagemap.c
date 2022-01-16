@@ -102,11 +102,10 @@ static unsigned long get_pageflags(int fd, unsigned long pfn)
 	unsigned long flags;
 	int len;
 
-	write(fd, &pfn, sizeof(pfn));
-	len = read(fd, &flags, sizeof(flags));
-	if (len < sizeof(flags)) {
+	len = pread(fd, &flags, sizeof(flags), pfn*8);
+	if (len < 0) {
 	        printf("read page flags error: pfn %lu\n", pfn);
-	        return 0;
+		exit(EXIT_FAILURE);
 	}
 
 	return flags;
@@ -117,11 +116,10 @@ static unsigned long get_count(int fd, unsigned long pfn)
 	unsigned long count;
 	int len;
 
-	write(fd, &pfn, sizeof(pfn));
-	len = read(fd, &count, sizeof(count));
-	if (len < sizeof(count)) {
+	len = pread(fd, &count, sizeof(count), pfn*8);
+	if (len < 0) {
 	        printf("read page map count error: pfn %lu\n", pfn);
-	        return 0;
+		exit(EXIT_FAILURE);
 	}
 
 	return count;
